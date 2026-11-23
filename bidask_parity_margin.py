@@ -2825,7 +2825,7 @@ def margin_worker():
     """Serially consume margin requests from Engine 1 (LTP) so we never exceed
     Arrow's 10 req/sec REST limit. Engine 2 uses in-house SPAN/ELM margin."""
     while not margin_stop.is_set():
-        served = _drain_one(margin_request_q, margin_pending, False)
+        served = _drain_one(margin_request_q, margin_pending)
         if not served:
             time.sleep(MARGIN_WORKER_POLL_SEC)
 
