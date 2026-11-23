@@ -1157,7 +1157,27 @@ login_result = client.auto_login(
     totp_secret=TOTP_SECRET,
 )
 TOKEN = client.get_token()
+_last_login_mono = time.monotonic()
 print(f"[{ist_text()}] Login OK: {login_result.get('name', '?')}")
+
+
+def refresh_token():
+    """Re-login to Arrow and refresh the token. Returns True on success."""
+    global TOKEN, _last_login_mono, client
+    try:
+        login_result = client.auto_login(
+            user_id=USER_ID,
+            password=PASSWORD,
+            app_secret=APP_SECRET,
+            totp_secret=TOTP_SECRET,
+        )
+        TOKEN = client.get_token()
+        _last_login_mono = time.monotonic()
+        print(f"[{ist_text()}] Token refreshed: {login_result.get('name', '?')}")
+        return True
+    except Exception as exc:
+        print(f"[{ist_text()}] Token refresh FAILED: {exc}")
+        return False
 
 
 # =====================================================
@@ -3494,6 +3514,11 @@ try:
                 p50, p99, dc, ec,
             )))
             last_health_time = now
+
+        # Token watchdog: refresh if >20 hours old
+        if time.monotonic() - _last_login_mono > 72000:
+            print(f"[{ist_text()}] Token age >20h — refreshing...")
+            refresh_token()
 
         if now - last_stats_time >= STATS_INTERVAL:
             with lock:
