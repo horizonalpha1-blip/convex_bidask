@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-BID/ASK-ONLY PARITY ENGINE — 2 HOUR RUN
+BID/ASK-ONLY PARITY ENGINE — ALL DAY RUN
 =======================================
 Fork of exec_parity_test.py. Same 216-stock universe, same token/market-map
 build, same cash/future/CE/PE subscriptions, same FULL mode, same ₹1,300 gate,
